@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "165480819149",
+    "firebase_url": "https://hi5firebaseproject-d34d2.firebaseio.com",
+    "project_id": "hi5firebaseproject-d34d2",
+    "storage_bucket": "hi5firebaseproject-d34d2.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:165480819149:android:c3a972d66c7ae83f",
+        "android_client_info": {
+          "package_name": "com.artesseum.hi5"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "165480819149-d0ue4kq9rv91sdhj4rl6bmhbr7p2hpn5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.artesseum.hi5",
+            "certificate_hash": "af80c2c29104a600cea8fd9bae32e7a2f0759d70"
+          }
+        },
+        {
+          "client_id": "165480819149-tfs6fnqfggd1esktkvvrv8ua9g3o78cm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB_F-Z-GvkfBzMK-IbJdR_fYypNhrfN0d4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "165480819149-tfs6fnqfggd1esktkvvrv8ua9g3o78cm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
