@@ -7,25 +7,51 @@
     tools:context="com.artesseum.hi5.MainActivity">
 
 
-
-
-    <android.support.v4.widget.NestedScrollView
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/bg_main">
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:backgroundTint="@color/teal">
+
+            <EditText
+                android:id="@+id/editTextEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Email"
+                android:inputType="textEmailAddress" />
+
+            <EditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Password"
+                android:inputType="textPassword" />
+
 
             <Button
-                android:id="@+id/contact1"
-                android:layout_width="wrap_content"
+                android:id="@+id/buttonRegister"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="sendButtonClick"
-                android:text="send"
-                />
+                android:text="Register" />
+
+            <Button
+                android:id="@+id/buttonSignin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="SignIn" />
+
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+
+    </android.support.constraint.ConstraintLayout>
+
 
 </RelativeLayout>
