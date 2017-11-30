@@ -24,7 +24,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
 
-    private DatabaseReference mDatabase;
+    private DatabaseReference storeUserDataReference;
     private Button buttonRegister, buttonLogin;
     private EditText editTextEmail, editTextPassword;
     private ProgressDialog progressDialog;
@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void registerUser(){
-        String email = editTextEmail.getText().toString().trim();
+        final String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
 
@@ -89,11 +89,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+                            String current_User_Id = firebaseAuth.getCurrentUser().getUid();
+                            storeUserDataReference = FirebaseDatabase.getInstance().getReference().child("users").child(current_User_Id);
 
-                            Toast.makeText(MainActivity.this, "Registered",Toast.LENGTH_SHORT).show();
-                            progressDialog.dismiss();
-                            finish();
-                            startActivity(new Intent(getApplicationContext(),AppActivity.class));
+                            storeUserDataReference.child("email").setValue(email)
+                                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if (task.isSuccessful()){
+                                                Toast.makeText(MainActivity.this, "Registered",Toast.LENGTH_SHORT).show();
+                                                progressDialog.dismiss();
+                                                finish();
+                                                startActivity(new Intent(getApplicationContext(),AppActivity.class));
+
+
+                                            }else{
+                                                Toast.makeText(MainActivity.this, task.getException().getMessage(),Toast.LENGTH_LONG).show();
+
+                                            }
+
+
+
+                                        }
+                                    });
 
 
                         }else{
