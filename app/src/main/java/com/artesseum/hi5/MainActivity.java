@@ -9,8 +9,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private DatabaseReference storeUserDataReference;
     private Button buttonRegister, buttonLogin;
-    private EditText editTextEmail, editTextPassword;
+    private EditText editTextEmail, editTextPassword, editUserName;
     private ProgressDialog progressDialog;
     private FirebaseAuth firebaseAuth;
 
@@ -55,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonLogin = (Button)findViewById(R.id.buttonSignin);
         editTextEmail = (EditText) findViewById(R.id.editTextEmail);
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
+        editUserName = (EditText) findViewById(R.id.editUseName);
 
        buttonRegister.setOnClickListener(this);
        buttonLogin.setOnClickListener(this);
@@ -67,6 +66,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void registerUser(){
         final String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+        final String username = editUserName.getText().toString().toLowerCase().trim();
+
+        if (TextUtils.isEmpty(username)){
+            Toast.makeText(this, "Username is Blank",Toast.LENGTH_SHORT).show();
+            return;
+
+        }
 
 
         if (TextUtils.isEmpty(email)){
@@ -92,7 +98,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             String current_User_Id = firebaseAuth.getCurrentUser().getUid();
                             storeUserDataReference = FirebaseDatabase.getInstance().getReference().child("users").child(current_User_Id);
 
-                            storeUserDataReference.child("email").setValue(email)
+                            storeUserDataReference.child("email").setValue(email);
+                            storeUserDataReference.child("username").setValue(username)
                                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull Task<Void> task) {
@@ -104,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                                             }else{
+                                                progressDialog.dismiss();
                                                 Toast.makeText(MainActivity.this, task.getException().getMessage(),Toast.LENGTH_LONG).show();
 
                                             }
@@ -115,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
                         }else{
+                            progressDialog.dismiss();
                             Toast.makeText(MainActivity.this, task.getException().getMessage(),Toast.LENGTH_LONG).show();
                         }
 
@@ -126,8 +135,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
     private void userLogin(){
+        String username = editUserName.getText().toString().toLowerCase().trim();
         String email = editTextEmail.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
+
+        if (TextUtils.isEmpty(username)){
+            Toast.makeText(this, "Username is Blank",Toast.LENGTH_SHORT).show();
+            return;
+
+        }
 
 
         if (TextUtils.isEmpty(email)){
@@ -189,13 +205,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
-
-   /* public void sendButtonClick(View view){
-        final DatabaseReference newPost = mDatabase.push();
-        newPost.child("content").setValue("Hi Five!");
-
-
-
-    }*/
 
 }

@@ -80,6 +80,7 @@ public class AppActivity extends AppCompatActivity {
             protected void populateViewHolder(AllUsersViewHolder viewHolder, AllUsers model, int position) {
 
             viewHolder.setEmail(model.getEmail());
+            viewHolder.setUsername(model.getUsername());
 
 
             }
@@ -107,6 +108,15 @@ public class AppActivity extends AppCompatActivity {
         public void setEmail(String email){
             TextView userEmail = (TextView) mViews.findViewById(R.id.user_name);
             userEmail.setText(email);
+
+
+
+
+        }
+
+        public void setUsername(String username){
+            TextView Username = (TextView) mViews.findViewById(R.id.username);
+            Username.setText(username);
 
         }
 
