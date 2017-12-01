@@ -37,9 +37,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null){
-            Intent main = new Intent(MainActivity.this, AppActivity.class);
-            main.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(main);
+
+            finish();
+            startActivity(new Intent(getApplicationContext(),AppActivity.class));
+
+
         }else
 
 
@@ -55,8 +57,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         editTextPassword = (EditText) findViewById(R.id.editTextPassword);
         editUserName = (EditText) findViewById(R.id.editUseName);
 
-       buttonRegister.setOnClickListener(this);
-       buttonLogin.setOnClickListener(this);
+        buttonRegister.setOnClickListener(this);
+        buttonLogin.setOnClickListener(this);
 
 
 
