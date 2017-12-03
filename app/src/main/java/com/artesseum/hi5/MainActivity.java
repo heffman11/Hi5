@@ -1,6 +1,7 @@
 package com.artesseum.hi5;
 
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final int RC_SIGN_IN = 123;
     private FirebaseAuth auth;
+    private DatabaseReference userData;
 
     //
     @Override
@@ -31,9 +33,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==RC_SIGN_IN){
             if (resultCode == RESULT_OK){
+
+
                 // user logged in
                 Log.d("AUTH", auth.getCurrentUser().getEmail());
                 Toast.makeText(MainActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
+                String email = auth.getCurrentUser().getEmail();
+                String uid = auth.getCurrentUser().getUid();
+                userData = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
+                userData.child("email").setValue(email);
 
                 // activate friends list method here
 
