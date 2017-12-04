@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.auth.AuthUI;
@@ -18,6 +19,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import org.w3c.dom.Text;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int RC_SIGN_IN = 123;
     private FirebaseAuth auth;
     private DatabaseReference userData;
+    TextView displaynameView;
 
     //
     @Override
@@ -33,25 +37,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==RC_SIGN_IN){
             if (resultCode == RESULT_OK){
-
-
                 // user logged in
                 Log.d("AUTH", auth.getCurrentUser().getEmail());
+
+
                 Toast.makeText(MainActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
+                String displayName = auth.getCurrentUser().getDisplayName();
                 String email = auth.getCurrentUser().getEmail();
                 String uid = auth.getCurrentUser().getUid();
                 userData = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
                 userData.child("email").setValue(email);
+                userData.child("displayname").setValue(displayName);
+                displaynameView = findViewById(R.id.displayNameTextView);
+                displaynameView.setText(displayName);
+
+
+
 
                 // activate friends list method here
-
-
-
-
-
-
-
-
             }
             else{
                 //// user auth
