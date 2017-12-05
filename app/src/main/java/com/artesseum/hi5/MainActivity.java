@@ -5,10 +5,13 @@ import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -16,13 +19,18 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -45,6 +53,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 String displayName = auth.getCurrentUser().getDisplayName();
                 String email = auth.getCurrentUser().getEmail();
                 String uid = auth.getCurrentUser().getUid();
+
+
+
+                // users store by key
                 userData = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
                 userData.child("email").setValue(email);
                 userData.child("displayname").setValue(displayName);
@@ -78,9 +90,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onClick(View view) {
                 Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                Toast.makeText(MainActivity.this,"Share",Toast.LENGTH_SHORT).show();
+
                 sharingIntent.setType("text/plain");
                 sharingIntent.putExtra(Intent.EXTRA_TEXT,"Sharing Text");
                 startActivity(Intent.createChooser(sharingIntent,"Share via"));
+            }
+        });
+
+        // search button
+        FloatingActionButton search = (FloatingActionButton) findViewById(R.id.search);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(MainActivity.this, "Add Users", Toast.LENGTH_SHORT).show();
+
+                searchProcess();
+
             }
         });
 
@@ -122,6 +148,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void onComplete(@NonNull Task<Void> task) {
                 Intent restart = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
                 restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    Toast.makeText(MainActivity.this,"Logged Out",Toast.LENGTH_SHORT).show();
+
                 startActivity(restart);
                 finish();
 
@@ -129,6 +157,66 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
+
+    }
+
+
+
+
+    // search dialog
+    public void searchProcess(){
+
+       final ArrayList UserList = new ArrayList<String>();
+
+        /// get data snapshot before  ------------------------THIS NEEDS LOOKING INTO __ ADD LITENERS FOR DEBUGGIN
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+        DatabaseReference ref2 = ref.child("users");
+        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+
+                for (DataSnapshot dsp : dataSnapshot.getChildren()){
+                    UserList.add(String.valueOf(dsp.getValue()));
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+
+        //////// Search
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_search, null);
+        final EditText mUsername = mView.findViewById(R.id.etUsername);
+        Button mAdd = mView.findViewById(R.id.addUserButton);
+
+        mAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // add && username not in database
+                String usernametext = mUsername.getText().toString().trim();
+                if(UserList.contains(usernametext)){
+                    Toast.makeText(MainActivity.this,"UserAdded",Toast.LENGTH_SHORT).show();
+
+                }else{
+                    Toast.makeText(MainActivity.this,"Username Invalid",Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        });
+
+        mBuilder.setView(mView);
+        AlertDialog dialog = mBuilder.create();
+        dialog.show();
 
     }
 }
