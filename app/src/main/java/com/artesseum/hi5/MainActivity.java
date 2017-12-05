@@ -19,11 +19,15 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.w3c.dom.Text;
 
@@ -84,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         // share button
         FloatingActionButton share = (FloatingActionButton) findViewById(R.id.share);
         share.setOnClickListener(new View.OnClickListener() {
@@ -103,9 +108,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(MainActivity.this, "Add Users", Toast.LENGTH_SHORT).show();
-
-                searchProcess();
+                Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);
+                startActivity(searchIntent);
 
             }
         });
@@ -115,6 +119,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         auth = FirebaseAuth.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
+
+           String  displayname = auth.getCurrentUser().getDisplayName();
+            displaynameView = findViewById(R.id.displayNameTextView);
+            displaynameView.setText(displayname);
         ////////// here direct too on activiry result. same process...
 
         } else {
@@ -157,66 +165,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
         }
-
-    }
-
-
-
-
-    // search dialog
-    public void searchProcess(){
-
-       final ArrayList UserList = new ArrayList<String>();
-
-        /// get data snapshot before  ------------------------THIS NEEDS LOOKING INTO __ ADD LITENERS FOR DEBUGGIN
-
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-        DatabaseReference ref2 = ref.child("users");
-        ref2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-
-
-                for (DataSnapshot dsp : dataSnapshot.getChildren()){
-                    UserList.add(String.valueOf(dsp.getValue()));
-                }
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-
-
-
-        //////// Search
-
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(MainActivity.this);
-        View mView = getLayoutInflater().inflate(R.layout.dialog_search, null);
-        final EditText mUsername = mView.findViewById(R.id.etUsername);
-        Button mAdd = mView.findViewById(R.id.addUserButton);
-
-        mAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // add && username not in database
-                String usernametext = mUsername.getText().toString().trim();
-                if(UserList.contains(usernametext)){
-                    Toast.makeText(MainActivity.this,"UserAdded",Toast.LENGTH_SHORT).show();
-
-                }else{
-                    Toast.makeText(MainActivity.this,"Username Invalid",Toast.LENGTH_SHORT).show();
-                }
-            }
-
-        });
-
-        mBuilder.setView(mView);
-        AlertDialog dialog = mBuilder.create();
-        dialog.show();
 
     }
 }
