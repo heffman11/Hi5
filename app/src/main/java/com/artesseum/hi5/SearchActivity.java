@@ -77,6 +77,10 @@ public class SearchActivity extends Activity {
                         final String receiverId = singlesnapshot.getKey();
                         receiverUserId=receiverId;
 
+                        if(senderUSerID.equals(receiverUserId)){
+                            Toast.makeText(SearchActivity.this,"You Can Not Add Yourself",Toast.LENGTH_SHORT).show();
+                        }else
+
                         FriendRequetReference.child(senderUSerID).child(receiverId)
                                 .child("request_type").setValue("sent")
                         .addOnCompleteListener(new OnCompleteListener<Void>() {
