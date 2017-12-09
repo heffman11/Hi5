@@ -36,12 +36,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 123;
     private FirebaseAuth auth;
     private DatabaseReference userData;
-    TextView displaynameView;
+    String usernameCheck = "";
+
 
     //
     @Override
@@ -51,26 +52,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (resultCode == RESULT_OK){
                 // user logged in
                 Log.d("AUTH", auth.getCurrentUser().getEmail());
+                String email = auth.getCurrentUser().getEmail();
+                String uid = auth.getCurrentUser().getUid();
+                // store user in database
+
+                userData = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
+                userData.child("email").setValue(email);
+                Intent loggedIn = new Intent(MainActivity.this, AppActivity.class);
+                startActivity(loggedIn);
 
 
                 Toast.makeText(MainActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
-                String displayName = auth.getCurrentUser().getDisplayName();
-                String email = auth.getCurrentUser().getEmail();
-                String uid = auth.getCurrentUser().getUid();
 
-
-
-                // users store by key
-                userData = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
-                userData.child("email").setValue(email);
-                userData.child("displayname").setValue(displayName);
-                displaynameView = findViewById(R.id.displayNameTextView);
-                displaynameView.setText(displayName);
-
-
-
-
-                // activate friends list method here
             }
             else{
                 //// user auth
@@ -78,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
     }
+    // check if UID has username, if not then show Username Select clas
+
 
 
     // on app start check log in and
@@ -89,41 +84,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
 
-        // share button
-        FloatingActionButton share = (FloatingActionButton) findViewById(R.id.share);
-        share.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
-                Toast.makeText(MainActivity.this,"Share",Toast.LENGTH_SHORT).show();
-
-                sharingIntent.setType("text/plain");
-                sharingIntent.putExtra(Intent.EXTRA_TEXT,"Sharing Text");
-                startActivity(Intent.createChooser(sharingIntent,"Share via"));
-            }
-        });
-
-        // search button
-        FloatingActionButton search = (FloatingActionButton) findViewById(R.id.search);
-        search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent searchIntent = new Intent(MainActivity.this,SearchActivity.class);
-                startActivity(searchIntent);
-
-            }
-        });
-
-
-
         auth = FirebaseAuth.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
+
+        ///// if current user is logged in, then log in
         if (auth.getCurrentUser() != null) {
 
-           String  displayname = auth.getCurrentUser().getDisplayName();
-            displaynameView = findViewById(R.id.displayNameTextView);
-            displaynameView.setText(displayname);
-        ////////// here direct too on activiry result. same process...
+            Intent loggedIn = new Intent(MainActivity.this, AppActivity.class);
+            startActivity(loggedIn);
+        ////////// here direct too on activity result. same process...
 
         } else {
 
@@ -136,36 +105,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivityForResult(
                     AuthUI.getInstance()
                             .createSignInIntentBuilder()
-                            .setTheme(R.style.AppTheme)
+                            .setTheme(R.style.AppTheme_NoActionBar)
                             .setAvailableProviders(providers)
                             .build(), RC_SIGN_IN);
         }
 
 
-        findViewById(R.id.logout).setOnClickListener(this);
+  }
 
 
-    }
-
-    //// Log Out
-    @Override
-    public void onClick(View view) {
-        if(view.getId()==R.id.logout){
-            AuthUI.getInstance().signOut(this).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                Intent restart = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
-                restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    Toast.makeText(MainActivity.this,"Logged Out",Toast.LENGTH_SHORT).show();
-
-                startActivity(restart);
-                finish();
-
-                Log.d("Auth","User Logged Out");
-                }
-            });
-        }
-
-    }
 }
 
