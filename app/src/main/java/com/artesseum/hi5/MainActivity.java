@@ -10,8 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,10 +43,9 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     private FirebaseAuth auth;
     private DatabaseReference userData;
-    String usernameCheck = "";
+    TextView displayNameView;
 
-
-    //
+    //register
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -54,15 +55,16 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("AUTH", auth.getCurrentUser().getEmail());
                 String email = auth.getCurrentUser().getEmail();
                 String uid = auth.getCurrentUser().getUid();
+
                 // store user in database
 
                 userData = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
                 userData.child("email").setValue(email);
-                Intent loggedIn = new Intent(MainActivity.this, AppActivity.class);
-                startActivity(loggedIn);
-
 
                 Toast.makeText(MainActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
+
+                mainActivity();
+
 
             }
             else{
@@ -71,12 +73,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     }
-    // check if UID has username, if not then show Username Select clas
-
-
-
-    // on app start check log in and
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,18 +80,61 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
+
         auth = FirebaseAuth.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
+
+
+        /////log out
+
+
+/*
+        FirebaseAuth.getInstance().signOut();
+        Intent restart = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+        restart.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Toast.makeText(MainActivity.this,"Logged Out",Toast.LENGTH_SHORT).show();
+
+        startActivity(restart);
+        finish();
+
+        Log.d("Auth","User Logged Out");
+*/
+
+
+        //---------------------------------------------------------------------------------------//
+        // share button
+        FloatingActionButton share = (FloatingActionButton) findViewById(R.id.share);
+        share.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent sharingIntent = new Intent(Intent.ACTION_SEND);
+                Toast.makeText(MainActivity.this,"Share",Toast.LENGTH_SHORT).show();
+
+                sharingIntent.setType("text/plain");
+                sharingIntent.putExtra(Intent.EXTRA_TEXT,"Sharing Text");
+                startActivity(Intent.createChooser(sharingIntent,"Share via"));
+            }
+        });
+        //---------------------------------------------------------------------------------------//
+
+
+
+
+
 
         ///// if current user is logged in, then log in
         if (auth.getCurrentUser() != null) {
 
-            Intent loggedIn = new Intent(MainActivity.this, AppActivity.class);
-            startActivity(loggedIn);
-        ////////// here direct too on activity result. same process...
+
+            mainActivity();
+
+
+
+
+
+        //--------------------------create log in screen--------------------------------------//
 
         } else {
-
 
             List<AuthUI.IdpConfig> providers = Arrays.asList(
                     new AuthUI.IdpConfig.Builder(AuthUI.EMAIL_PROVIDER).build(),
@@ -112,6 +151,35 @@ public class MainActivity extends AppCompatActivity {
 
 
   }
+
+    private void mainActivity() {
+
+
+        TextView displayNameView = (TextView) findViewById(R.id.DisplayNameHere);
+        Spinner mySpinner = (Spinner) findViewById(R.id.spinnerOptions);
+
+
+        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,
+                getResources().getStringArray(R.array.names));
+        myAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mySpinner.setAdapter(myAdapter);
+
+
+
+
+        String DisplayName = auth.getCurrentUser().getDisplayName();
+        displayNameView.setText(DisplayName);
+
+
+
+
+
+
+
+
+
+
+    }
 
 
 }

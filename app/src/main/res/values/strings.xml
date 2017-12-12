@@ -3,6 +3,17 @@
     <string name="facebook_application_id" translatable="false">1789647151333961</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb1789647151333961</string>
     <string name="title_activity_app">AppActivity</string>
+    
+    
+    ////spinner 
+    
+    <string-array name="names">
+        <item>Settings</item>
+        <item>Picture</item>
+        <item>Quote</item>
+        <item>Logout</item>
+
+    </string-array>
 
 
 </resources>
