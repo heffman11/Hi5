@@ -19,7 +19,10 @@
         </activity>
         <activity
             android:name=".SearchActivity"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/Theme.AppCompat.Dialog" />
+        <activity android:name=".UserProfile"
+            android:theme="@style/Theme.AppCompat.Dialog">
+        </activity>
     </application>
 
 </manifest>

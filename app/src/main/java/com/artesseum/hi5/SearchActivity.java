@@ -42,15 +42,16 @@ public class SearchActivity extends Activity {
         senderUSerID = senderID;
 
         Button searchButton = (Button)findViewById(R.id.searchButton);
+        startQuery();
 
-        searchButton.setOnClickListener(new View.OnClickListener() {
+   /*     searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startQuery();
 
             }
         });
-
+*/
 
 
 
@@ -69,6 +70,7 @@ public class SearchActivity extends Activity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.exists()){
                     Toast.makeText(SearchActivity.this,"User not found",Toast.LENGTH_SHORT).show();
+                    startQuery();
 
                 }
                 for(DataSnapshot singlesnapshot: dataSnapshot.getChildren()){
