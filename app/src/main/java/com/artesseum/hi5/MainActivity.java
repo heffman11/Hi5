@@ -30,6 +30,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -52,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int RC_SIGN_IN = 123;
     private FirebaseAuth auth;
     private DatabaseReference userData;
+    private String profileURL ="";
 
     //register
     @Override
@@ -60,34 +62,40 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode==RC_SIGN_IN){
             if (resultCode == RESULT_OK){
 
-                /// facebook stuff
+                /// check if facebook or google login
 
-                AccessToken accessToken = AccessToken.getCurrentAccessToken();
-                Profile profile = Profile.getCurrentProfile();
-                String profileURL = profile.getProfilePictureUri(200,200).toString();
-                GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
-                String profileURLGoogle = acct.getPhotoUrl().toString();
+                for (UserInfo user : FirebaseAuth.getInstance().getCurrentUser().getProviderData()){
 
+                    if (user.getProviderId().equals("facebook.com")){
+                        ///////////// for linked to facebook
+                        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+                        Profile profile = Profile.getCurrentProfile();
+                        profileURL = profile.getProfilePictureUri(200,200).toString();
+
+                    }else if (user.getProviderId().equals("google.com")){
+                        /////// for google account
+
+                        GoogleSignInAccount acct = GoogleSignIn.getLastSignedInAccount(getApplicationContext());
+                        profileURL = acct.getPhotoUrl().toString();
+                    }
+
+                }
 
                 // user logged in
-                Log.d("AUTH", auth.getCurrentUser().getEmail());
                 String email = auth.getCurrentUser().getEmail();
                 String uid = auth.getCurrentUser().getUid();
-                Uri photoUrl = auth.getCurrentUser().getPhotoUrl();
+                String displayName = auth.getCurrentUser().getDisplayName();
+
+
 
 
                 // store user in database
-
                 userData = FirebaseDatabase.getInstance().getReference().child("users").child(uid);
+                userData.child("displayname").setValue(displayName);
                 userData.child("email").setValue(email);
-                if (profileURLGoogle!=null){
-                    userData.child("photoUrl").setValue(profileURLGoogle);
-                }else{
-                    userData.child("photoUrl").setValue(profileURL);
+                userData.child("photoURL").setValue(profileURL);
 
-                }
                 Toast.makeText(MainActivity.this, "Logged In", Toast.LENGTH_SHORT).show();
-
                 mainActivity();
 
 
