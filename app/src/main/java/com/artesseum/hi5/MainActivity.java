@@ -37,6 +37,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ThrowOnExtraProperties;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
@@ -176,14 +177,14 @@ public class MainActivity extends AppCompatActivity {
     private void mainActivity()  {
 
 
-        TextView displayNameView = (TextView) findViewById(R.id.DisplayNameHere);
         ImageButton logoutButton = (ImageButton)findViewById(R.id.logoutButton);
         ImageButton searchButton = (ImageButton)findViewById(R.id.searchButton);
+        TextView userNameButton = findViewById(R.id.DisplayNameHere);
 
 
 
         String DisplayName = auth.getCurrentUser().getDisplayName();
-        displayNameView.setText(DisplayName);
+        userNameButton.setText(DisplayName);
 
 
     //---------------------log out button---------------------------------------------------------//
@@ -216,13 +217,22 @@ public class MainActivity extends AppCompatActivity {
 
         //---------------------Displayname button---------------------------------------------------------//
 
-        displayNameView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent UserProfile = new Intent(MainActivity.this, UserProfile.class);
-                startActivity(UserProfile);
-            }
-        });
+       userNameButton.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View view) {
+               Toast.makeText(MainActivity.this, "profile",Toast.LENGTH_SHORT).show();
+
+               try {
+                   Intent profileIntent = new Intent(MainActivity.this, ProfileActivity.class);
+                   startActivity(profileIntent);
+
+               }catch (Exception e){
+                   Toast.makeText(MainActivity.this, e.getMessage().toString(), Toast.LENGTH_SHORT).show();
+               }
+
+
+           }
+       });
 
 
 
