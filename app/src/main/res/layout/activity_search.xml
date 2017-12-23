@@ -20,19 +20,14 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:ems="10"
+            android:maxLength="20"
             android:hint="Name"
             android:textColor="@color/primary_material_dark" />
 
-        <Button
-            android:id="@+id/searchButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:background="@color/accent_material_dark"
-            android:text="Search"
-            android:textAlignment="center"
-            android:textColor="@color/primary_material_dark" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/useresRecycleView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>

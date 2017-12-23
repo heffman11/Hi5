@@ -13,7 +13,12 @@
         android:layout_height="wrap_content"
         android:background="@color/fui_transparent"
         android:layout_gravity="center"
+        android:backgroundTint="@color/ColorAccent"
         android:orientation="vertical">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <ImageView
             android:id="@+id/userProfilePic"
@@ -31,6 +36,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textAlignment="center" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 </android.support.design.widget.CoordinatorLayout>
