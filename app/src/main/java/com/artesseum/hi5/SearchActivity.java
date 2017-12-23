@@ -1,6 +1,7 @@
 package com.artesseum.hi5;
 
 import android.app.Activity;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -38,8 +39,10 @@ public class SearchActivity extends AppCompatActivity {
 
     public static String finalSearchText="";
     public static String senderUSerID="";
+    public static String visitUserID="";
     private RecyclerView usersList;
     FirebaseRecyclerAdapter adapter;
+
 
 
 
@@ -104,7 +107,6 @@ public class SearchActivity extends AppCompatActivity {
 
     private void startQuery() {
 
-
         Query query = FirebaseDatabase.getInstance().getReference().child("users").orderByChild("displayname").equalTo(finalSearchText);
         FirebaseRecyclerOptions<Users> options =
                 new FirebaseRecyclerOptions.Builder<Users>().setQuery(query,Users.class)
@@ -119,11 +121,21 @@ public class SearchActivity extends AppCompatActivity {
 
             }
             @Override
-            protected void onBindViewHolder(usersHolder holder, int position, Users model) {
+            protected void onBindViewHolder(usersHolder holder, final int position, Users model) {
 
                 holder.setDisplayname(model.getDisplayname());
                 holder.setEmail(model.getEmail());
                 holder.setPhotoURL(model.getPhotoURL());
+
+
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View view) {
+                        visitUserID = getRef(position).getKey();
+                        Toast.makeText(SearchActivity.this,"sent",Toast.LENGTH_SHORT).show();
+                        return true;
+                    }
+                });
 
 
             }
